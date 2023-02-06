@@ -1,0 +1,124 @@
+Microsoft Windows [Version 10.0.22621.1194]
+(c) Microsoft Corporation. All rights reserved.
+
+C:\Users\Hp>mongosh
+Current Mongosh Log ID: 63e0e566bae77610a77db800
+Connecting to:          mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+1.6.1
+Using MongoDB:          6.0.3
+Using Mongosh:          1.6.1
+
+For mongosh info see: https://docs.mongodb.com/mongodb-shell/
+
+------
+   The server generated these startup warnings when booting
+   2023-02-04T20:52:06.261+05:30: Access control is not enabled for the database. Read and write access to data and configuration is unrestricted
+------
+
+------
+   Enable MongoDB's free cloud-based monitoring service, which will then receive and display
+   metrics about your deployment (disk utilization, CPU, operation statistics, etc).
+
+   The monitoring data will be available on a MongoDB website with a unique URL accessible to you
+   and anyone you share the URL with. MongoDB may use this information to make product
+   improvements and to suggest MongoDB products and deployment options to you.
+
+   To enable free monitoring, run the following command: db.enableFreeMonitoring()
+   To permanently disable this reminder, run the following command: db.disableFreeMonitoring()
+------
+
+test> show dbs
+admin         40.00 KiB
+auth201       72.00 KiB
+config       108.00 KiB
+graduates     72.00 KiB
+local         80.00 KiB
+nemmasai     144.00 KiB
+nxm            2.01 MiB
+school        72.00 KiB
+superheroDB   72.00 KiB
+test> use nxm
+switched to db nxm
+nxm> show collections
+blogs
+countries
+heroes
+orders
+purchases
+region
+users
+userss
+zips
+nxm> db.userss.find()
+[
+  { _id: 1, name: 'Alice', age: 25 },
+  { _id: 2, name: 'Bob', age: 30 },
+  { _id: 3, name: 'Charlie', age: 35 }
+]
+nxm> db.purchases.find()
+[
+  { _id: 1, user_id: 1, item: 'book', price: 10 },
+  { _id: 2, user_id: 1, item: 'pen', price: 5 },
+  { _id: 3, user_id: 2, item: 'book', price: 15 },
+  { _id: 4, user_id: 2, item: 'pen', price: 6 },
+  { _id: 5, user_id: 3, item: 'book', price: 20 },
+  { _id: 6, user_id: 3, item: 'pen', price: 7 }
+]
+nxm> db.purchases.createIndex({'user_id:1'})
+Uncaught:
+SyntaxError: Unexpected token (1:37)
+
+> 1 | db.purchases.createIndex({'user_id:1'})
+    |                                      ^
+  2 |
+
+nxm> db.purchases.createIndex({'user_id:1'})
+Uncaught:
+SyntaxError: Unexpected token (1:37)
+
+> 1 | db.purchases.createIndex({'user_id:1'})
+    |                                      ^
+  2 |
+
+nxm> db.purchases.createIndex([{'user_id:1'}])
+Uncaught:
+SyntaxError: Unexpected token (1:38)
+
+> 1 | db.purchases.createIndex([{'user_id:1'}])
+    |                                       ^
+  2 |
+
+nxm> db.purchases.createIndex(['user_id:1'])
+
+nxm> db.purchases.createIndex({'user_id':1})
+user_id_1
+nxm> db.userss.aggregate([{$lookup:{from:'purchases',localField:'_id',foreignField:'user_id',as:'purchases'}},{$project:{'purchases.user_id':0}}])
+[
+  {
+    _id: 1,
+    name: 'Alice',
+    age: 25,
+    purchases: [
+      { _id: 1, item: 'book', price: 10 },
+      { _id: 2, item: 'pen', price: 5 }
+    ]
+  },
+  {
+    _id: 2,
+    name: 'Bob',
+    age: 30,
+    purchases: [
+      { _id: 3, item: 'book', price: 15 },
+      { _id: 4, item: 'pen', price: 6 }
+    ]
+  },
+  {
+    _id: 3,
+    name: 'Charlie',
+    age: 35,
+    purchases: [
+      { _id: 5, item: 'book', price: 20 },
+      { _id: 6, item: 'pen', price: 7 }
+    ]
+  }
+]
+nxm>
